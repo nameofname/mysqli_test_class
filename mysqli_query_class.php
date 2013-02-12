@@ -1,9 +1,5 @@
 <?php
 
-$sql = new SQL(); 
-
-// MYSQLI test class. Does queries for you, or an array of queries. 
-// Can test a query, or array of queries using mysql transactions (does queries then rolls them back). 
 class SQL {
 
     private $host; 
@@ -23,7 +19,9 @@ class SQL {
     // executes a single query, or an array of queries: 
     public function query($queries = array()) {
         $this->open(); 
+        $this->conn->autocommit(FALSE);
         $out = $this->_do_queries($queries); 
+        $this->conn->commit(); 
         $this->close(); 
         return $out; 
     }
@@ -74,7 +72,7 @@ class SQL {
         // now run the query
         if ($this->conn->real_query($sql)) {
             // now get the result: 
-            $result = $this->conn->store_result(); 
+            //$result = $this->conn->store_result(); 
             if ($result = $this->conn->store_result()) {
                 while ($row = $result->fetch_assoc()) {
                     $out[] = $row; 
